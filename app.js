@@ -139,6 +139,14 @@ const confirmDescEl  = document.getElementById('confirmDesc');
 const confirmYes    = document.getElementById('confirmYes');
 const confirmNo     = document.getElementById('confirmNo');
 
+// ---- Birthday Modal Elements ----
+const birthdayModal       = document.getElementById('birthdayModal');
+const birthdayNameInput   = document.getElementById('birthdayNameInput');
+const birthdayMsgInput    = document.getElementById('birthdayMsgInput');
+const birthdaySubmit      = document.getElementById('birthdaySubmit');
+const birthdayCancel      = document.getElementById('birthdayCancel');
+const adminBirthdayBtn    = document.getElementById('adminBirthdayBtn');
+
 // ==========================================
 //  PARTICLES (background canvas)
 // ==========================================
@@ -277,6 +285,57 @@ document.addEventListener('keydown', e => {
     if (editModal && !editModal.classList.contains('hidden')) editCancel.click();
     if (confirmModal && !confirmModal.classList.contains('hidden')) confirmNo.click();
     if (passwordModal && !passwordModal.classList.contains('hidden')) passwordSkip.click();
+    if (birthdayModal && !birthdayModal.classList.contains('hidden')) birthdayCancel.click();
+  }
+});
+
+// ---- Birthday Modal Logic ----
+let birthdayDefaultMsg = "Wishing you a very Happy Birthday, [Name]! Have a wonderful day filled with joy and success! 🎂🎉✨";
+
+function updateBirthdayTemplate() {
+  const name = birthdayNameInput.value.trim() || "User";
+  birthdayMsgInput.value = birthdayDefaultMsg.replace("[Name]", name);
+}
+
+birthdayNameInput && birthdayNameInput.addEventListener('input', updateBirthdayTemplate);
+
+adminBirthdayBtn && adminBirthdayBtn.addEventListener('click', () => {
+  birthdayNameInput.value = '';
+  updateBirthdayTemplate();
+  birthdayModal.classList.remove('hidden');
+  setTimeout(() => birthdayNameInput.focus(), 100);
+});
+
+birthdayCancel && birthdayCancel.addEventListener('click', () => {
+  birthdayModal.classList.add('hidden');
+});
+
+birthdaySubmit && birthdaySubmit.addEventListener('click', () => {
+  const name = birthdayNameInput.value.trim();
+  const text = birthdayMsgInput.value.trim();
+  if (!name) {
+    shakeInput(birthdayNameInput);
+    return;
+  }
+  if (!text) {
+    shakeInput(birthdayMsgInput);
+    return;
+  }
+
+  messagesRef.push({
+    type: 'birthday',
+    name: name,
+    text: text,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
+
+  birthdayModal.classList.add('hidden');
+});
+
+birthdayNameInput && birthdayNameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    birthdaySubmit.click();
   }
 });
 
@@ -542,6 +601,29 @@ function listenMessages() {
 
 // ---- Create message DOM element ----
 function createMessageElement(key, msg) {
+  // Birthday card rendering
+  if (msg.type === 'birthday') {
+    const el = document.createElement('div');
+    el.className = 'system-msg birthday';
+    el.id = `msg-${key}`;
+    el.innerHTML = `
+      <div class="birthday-card-inner">
+        <div class="birthday-decor">🎂🎉🥳🎈🎁</div>
+        <h3 class="birthday-title">HAPPY BIRTHDAY, ${escapeHtml(msg.name)}!</h3>
+        <p class="birthday-text">${escapeHtml(msg.text)}</p>
+      </div>
+    `;
+
+    // Only trigger animation for new birthday messages (within 12 seconds)
+    const msgAge = Date.now() - (msg.timestamp || Date.now());
+    if (msgAge < 12000) {
+      setTimeout(() => {
+        launchEffect('birthday');
+      }, 300);
+    }
+    return el;
+  }
+
   // System / announcement messages
   if (msg.type === 'system') {
     const el = document.createElement('div');
@@ -1204,6 +1286,36 @@ shareJoinBtn && shareJoinBtn.addEventListener('click', shareApp);
 //  EFFECTS
 // ==========================================
 function launchEffect(type) {
+  if (type === 'birthday') {
+    const svgs = [
+      // Cake
+      '<svg viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16h16"/><path d="M10 9h4"/><path d="M12 5v4"/><circle cx="12" cy="3" r="1"/></svg>',
+      // Gift
+      '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v14"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 4.8 0 0 1 12 8a4.8 4.8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5z"/></svg>',
+      // Star
+      '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      // Balloon
+      '<svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 0-6 6c0 4 3 6 6 8.5 3-2.5 6-4.5 6-8.5a6 6 0 0 0-6-6z"/><path d="M12 16.5c-.5 1-1.5 2.5-1 4"/></svg>'
+    ];
+    const colors = ['#e84393', '#9b59b6', '#f1c40f', '#2ecc71', '#3498db', '#e67e22'];
+
+    for (let i = 0; i < 35; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'effect-particle svg-particle';
+        el.innerHTML = svgs[Math.floor(Math.random() * svgs.length)];
+        el.style.left  = Math.random() * 100 + 'vw';
+        el.style.top   = '-40px';
+        el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        const dur = 2.5 + Math.random() * 2;
+        el.style.animationDuration = dur + 's';
+        effectsLayer.appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000 + 100);
+      }, i * 100);
+    }
+    return;
+  }
+
   const emojis = type === 'hearts'
     ? ['💖', '💕', '❤️', '💗', '💓', '💞', '🩷']
     : ['🎉', '✨', '🎊', '⭐', '🌟', '💫', '🎈'];
