@@ -125,6 +125,8 @@ const cancelReplyBtn      = document.getElementById('cancelReply');
 const emojiPickerBtn      = document.getElementById('emojiPickerBtn');
 const emojiPickerEl       = document.getElementById('emojiPicker');
 const logoutBtn           = document.getElementById('logoutBtn');
+const shareBtn            = document.getElementById('shareBtn');
+const shareJoinBtn        = document.getElementById('shareJoinBtn');
 
 // ---- Custom Modal Elements ----
 const editModal     = document.getElementById('editModal');
@@ -1169,6 +1171,34 @@ function logout() {
     particlesCanvas.style.display = 'block';
   }
 }
+
+// ==========================================
+//  SHARE APP
+// ==========================================
+function shareApp() {
+  const shareData = {
+    title: 'GroupChat',
+    text: 'Join me on GroupChat for real-time messaging!',
+    url: window.location.href
+  };
+
+  if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    navigator.share(shareData)
+      .then(() => showToast('Shared successfully!'))
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error('Error sharing:', err);
+        }
+      });
+  } else {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => showToast('Link copied to clipboard!'))
+      .catch(err => console.error('Failed to copy link:', err));
+  }
+}
+
+shareBtn && shareBtn.addEventListener('click', shareApp);
+shareJoinBtn && shareJoinBtn.addEventListener('click', shareApp);
 
 // ==========================================
 //  EFFECTS
