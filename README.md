@@ -1,117 +1,61 @@
-# GroupChat 💬
+# GroupChat
 
-A real-time group chat application built with Firebase and modern web technologies.
+A real-time group messaging platform built with Firebase Realtime Database and modern web technologies.
 
 ## Features
 
-### Core Chat Features
-- **Real-time Messaging**: Send and receive messages instantly using Firebase Realtime Database
-- **User Presence**: See who's online in real-time
-- **Typing Indicators**: Shows when other users are typing
-- **Reply to Messages**: Quote specific messages with reply functionality
-- **Message Reactions**: Add emoji reactions to any message (❤️, 😂, 😮, 🔥, 👍, etc.)
-- **Edit & Delete Messages**: Users can edit their own messages, admins can edit any message
-- **Emoji Picker**: Quick access to 60+ emojis
+### Core Features
+- Real-time Messaging: Send and receive messages instantly.
+- Active Presence Tracking: View online status of participants.
+- Typing Indicators: Visual notifications when users are composing messages.
+- Message Threading: Quote and reply directly to specific messages.
+- Message Reactions: Express feedback with emoji reactions.
+- Edit and Delete: Update or remove messages with immediate database sync.
+- Integrated Emoji Picker: Quick access to an extensive set of characters.
 
-### Admin Features
-- **Mute Chat**: Disable messaging for all regular users
-- **Mute Individual Users**: Temporarily silence specific users for a set duration
-- **Clear Chat**: Remove all messages at once
-- **Pin Messages**: Highlight important messages with a pin bar at the top
-- **Send Announcements**: Broadcast important information to all users
-- **Message Highlighting**: Highlight important messages with special styling
-- **Special Effects**: Trigger heart or confetti animations for celebrations
+### Admin Controls
+- Global Chat Mute: Disable messaging for all non-administrative users.
+- Individual Participant Mute: Temporarily silence specific users.
+- Clear History: Purge all messages from the database.
+- Announcement System: Broadcast important notifications to all participants.
+- Pinned Messages: Highlight key messages at the top of the interface.
+- Rich Visual Effects: Broadcast animation triggers such as confetti or hearts.
+- Message Highlighting: Emphasize admin messages with custom styling.
 
-### UI/UX Features
-- **Beautiful Particle Background**: Animated particle canvas on join screen
-- **Smooth Animations**: Glassmorphic design with GSAP animations
-- **Mobile Responsive**: Works perfectly on phones, tablets, and desktops
-- **Dark Theme**: Modern dark interface with accent colors
-- **Side Panels**: Online users list and admin controls in slide-out panels
-- **Toast Notifications**: Informative notifications for events and admin actions
+### UI and Accessibility Upgrades
+- Clean Layout: Compact messaging spacing and premium dark mode.
+- Iconography: Standard SVG icons replacing emoji UI controls.
+- Keyboard Navigation: Close modals via the Escape key and focus visible styling.
+- Responsive Design: Custom viewport scaling optimized for mobile devices.
+- Accessibility Standards: Dynamic ARIA live status indicators, semantic markup, and WCAG AA contrast colors.
 
 ## Tech Stack
+- Frontend: HTML5, CSS3, JavaScript (ES6)
+- Database: Firebase Realtime Database
 
-- **Frontend**: HTML, CSS, JavaScript (54.6% JavaScript, 36% CSS, 9.4% HTML)
-- **Backend/Database**: Firebase Realtime Database
-- **Animations**: GSAP (GreenSock Animation Platform)
-- **Fonts**: DM Sans, Syne from Google Fonts
+## Setup and Deployment
 
-## How to Use
-
-### 1. Join the Chat
-- Enter your name (no account needed)
-- Click "Join Chat" to enter instantly
-- That's it! No signup, no passwords required
-
-### 2. Send Messages
-- Type your message in the input box
-- Press Enter or click the send button
-- Use the emoji button (😊) to add emojis to your message
-
-### 3. Interact with Messages
-- **Reply**: Click the reply button (↩) to quote a message
-- **React**: Click the react button (😊) to add an emoji reaction
-- **Edit**: Click the pencil button (✏️) to edit your message
-- **Delete**: Click the trash button (🗑️) to delete your message
-- **Pin** (Admin only): Click the pin button to highlight a message
-
-### 4. Admin Functions
-Users with admin access get extra powers:
-- Mute/unmute the entire chat
-- Mute individual users temporarily
-- Clear all messages
-- Pin important messages
-- Send announcements
-- Trigger celebratory animations
-
-## Special Features
-
-### Message Highlighting
-Admins can highlight next message with special styling to draw attention.
-
-### Pin Bar
-When a message is pinned, it appears at the top of the chat for everyone to see. Click the pin bar to scroll to that message.
-
-### Effects
-Trigger heart animations ❤️ or confetti 🎉 to celebrate with the group.
-
-### Typing Indicators
-See who's currently typing before their message arrives.
-
-## File Structure
-
-```
-├── index.html          # Main HTML file with UI structure
-├── app.js              # JavaScript logic (39KB - chat functionality)
-├── style.css           # Styling and animations (26KB)
-└── README.md           # This file
+### 1. Configure Firebase
+Update the `firebaseConfig` object in `app.js` with your Firebase project credentials:
+```javascript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 ```
 
-## Browser Support
+### 2. Launch Locally
+No build process is required. Serve the files locally using any static web server:
+```bash
+# Example using python
+python -m http.server 8000
+```
+Or open `index.html` directly in any web browser.
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Installation & Deployment
-
-1. Clone the repository
-2. No installation needed - it's a static web app!
-3. Open `index.html` in your browser or deploy to GitHub Pages
-
-The app works completely client-side with Firebase as the backend.
-
-## Notes
-
-- Messages are stored in Firebase Realtime Database
-- Online presence automatically clears when you close the browser
-- Muted status is temporary and expires after the set duration
-- All timestamps are in local timezone
-
----
-
-**Version**: Enhanced Edition  
-**Created**: April 2026  
-**Status**: Active
+### 3. Deploy
+The project consists of static files and can be hosted on GitHub Pages, Vercel, Netlify, or Firebase Hosting.

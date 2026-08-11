@@ -1,17 +1,17 @@
 // ==========================================
-//  AdjChat — Firebase Realtime Chat App
-//  app.js — Enhanced Edition
+//  GroupChat - Firebase Realtime Chat App
+//  app.js - Upgraded Edition (Lucide SVG Icons)
 // ==========================================
 
 // ---- Firebase Config ----
 const firebaseConfig = {
-  apiKey: "AIzaSyDGw_RyJsLzKXBiJRnzy1IzX3ql1QgglW4",
-  authDomain: "adjchat-8558d.firebaseapp.com",
-  databaseURL: "https://adjchat-8558d-default-rtdb.firebaseio.com",
-  projectId: "adjchat-8558d",
-  storageBucket: "adjchat-8558d.firebasestorage.app",
-  messagingSenderId: "846686155292",
-  appId: "1:846686155292:web:57ee5997f99e4a52aea5d9"
+  apiKey: "AIzaSyD7xkMs6PtzYd-GAvhd0DVAKZrsQ09mRDk",
+  authDomain: "group-messaging-platform.firebaseapp.com",
+  databaseURL: "https://group-messaging-platform-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "group-messaging-platform",
+  storageBucket: "group-messaging-platform.firebasestorage.app",
+  messagingSenderId: "636167704411",
+  appId: "1:636167704411:web:a58ef0b54edef951f5947e"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -41,7 +41,7 @@ let currentPinnedId  = null;  // for force-scroll
 // ---- Roles & Passwords ----
 const ROLES = {
   'deva':   { password: '@deva27',   role: 'aman',  badge: null,  label: null },
-  'aman': { password: '@aman27', role: 'admin', badge: '👑',  label: 'Admin' },
+  'aman': { password: '@aman27', role: 'admin', badge: null,  label: 'Admin' },
 };
 
 // ---- Quick Reactions ----
@@ -60,6 +60,20 @@ const EMOJI_GRID = [
   '🎉','🎊','🎈','🎀','🎁','🏆','🥇','⭐','🌟','💫','✅','❌','⚡','🌈','🌸',
   '🌹','🌺','🌻','🌼','💐','🍀','🎋','🍁','🌿','🌱','🐶','🐱','🐭','🐹','🐰',
 ];
+
+// ---- SVG Icon Constants (Lucide-style) ----
+const ICONS = {
+  reply: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>',
+  smilePlus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>',
+  pencil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>',
+  pinOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="2" x2="22" y1="2" y2="22"/><line x1="12" x2="12" y1="17" y2="22"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0-1 .2"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+  volumeX: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>',
+  pinSmall: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" style="vertical-align:middle"><line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>',
+  pencilSmall: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>',
+};
 
 // ---- DOM Elements ----
 const joinScreen          = document.getElementById('joinScreen');
@@ -111,9 +125,21 @@ const cancelReplyBtn      = document.getElementById('cancelReply');
 const emojiPickerBtn      = document.getElementById('emojiPickerBtn');
 const emojiPickerEl       = document.getElementById('emojiPicker');
 
+// ---- Custom Modal Elements ----
+const editModal     = document.getElementById('editModal');
+const editInput     = document.getElementById('editInput');
+const editSubmit    = document.getElementById('editSubmit');
+const editCancel    = document.getElementById('editCancel');
+const confirmModal  = document.getElementById('confirmModal');
+const confirmTitleEl = document.getElementById('confirmTitle');
+const confirmDescEl  = document.getElementById('confirmDesc');
+const confirmYes    = document.getElementById('confirmYes');
+const confirmNo     = document.getElementById('confirmNo');
+
 // ==========================================
 //  PARTICLES (background canvas)
 // ==========================================
+let particlesRunning = true;
 (function initParticles() {
   const canvas = document.getElementById('particles');
   if (!canvas) return;
@@ -139,6 +165,7 @@ const emojiPickerEl       = document.getElementById('emojiPicker');
   }
 
   function draw() {
+    if (!particlesRunning) return;
     ctx.clearRect(0, 0, W, H);
     particles.forEach(p => {
       ctx.beginPath();
@@ -193,6 +220,64 @@ document.addEventListener('click', e => {
 });
 
 // ==========================================
+//  CUSTOM MODALS (Edit + Confirm)
+// ==========================================
+let editingKey = null;
+let confirmCallback = null;
+
+function showEditModal(key, currentText) {
+  editingKey = key;
+  editInput.value = currentText;
+  editModal.classList.remove('hidden');
+  setTimeout(() => editInput.focus(), 100);
+}
+
+editSubmit && editSubmit.addEventListener('click', () => {
+  if (editingKey && editInput.value.trim() !== '') {
+    messagesRef.child(editingKey).update({ text: editInput.value.trim(), edited: true });
+  }
+  editModal.classList.add('hidden');
+  editingKey = null;
+});
+
+editCancel && editCancel.addEventListener('click', () => {
+  editModal.classList.add('hidden');
+  editingKey = null;
+});
+
+editInput && editInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); editSubmit.click(); }
+  if (e.key === 'Escape') editCancel.click();
+});
+
+function showConfirm(title, desc, onConfirm) {
+  confirmTitleEl.textContent = title;
+  confirmDescEl.textContent = desc;
+  confirmCallback = onConfirm;
+  confirmModal.classList.remove('hidden');
+}
+
+confirmYes && confirmYes.addEventListener('click', () => {
+  confirmModal.classList.add('hidden');
+  if (confirmCallback) confirmCallback();
+  confirmCallback = null;
+});
+
+confirmNo && confirmNo.addEventListener('click', () => {
+  confirmModal.classList.add('hidden');
+  confirmCallback = null;
+});
+
+// Global Escape handler for all modals
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (editModal && !editModal.classList.contains('hidden')) editCancel.click();
+    if (confirmModal && !confirmModal.classList.contains('hidden')) confirmNo.click();
+    if (passwordModal && !passwordModal.classList.contains('hidden')) passwordSkip.click();
+  }
+});
+
+// ==========================================
 //  JOIN FLOW
 // ==========================================
 joinBtn.addEventListener('click', handleJoin);
@@ -205,7 +290,7 @@ function handleJoin() {
   const key = name.toLowerCase();
   if (ROLES[key]) {
     pendingName = name;
-    modalTitle.textContent = `Welcome, ${name}! 👋`;
+    modalTitle.textContent = `Welcome, ${name}!`;
     modalDesc.textContent  = `This name has special powers. Enter password to unlock your role.`;
     passwordInput.value    = '';
     passwordError.classList.add('hidden');
@@ -248,9 +333,6 @@ passwordSkip.addEventListener('click', () => {
 //  ENTER CHAT
 // ==========================================
 function enterChat(name, role) {
-  // ── Unique user handling: stable uid based on name ──
-  // Same name (case-insensitive) always gets the same uid.
-  // This deduplicates online presence and lets them "own" their old messages.
   const uid = 'u_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
   currentUser = { name, role, uid };
 
@@ -258,12 +340,12 @@ function enterChat(name, role) {
   headerName.textContent  = name;
   headerAvatar.textContent = name.charAt(0).toUpperCase();
   if (role === 'admin') {
-    headerStatus.textContent = '● Admin 👑';
+    headerStatus.innerHTML = '<span class="status-dot"></span> Admin';
     headerStatus.style.color = '#e84393';
     adminMenuBtn.style.display = 'flex';
     adminExtras.classList.remove('hidden');
   } else {
-    headerStatus.textContent = '● Online';
+    headerStatus.innerHTML = '<span class="status-dot"></span> Online';
   }
 
   // Switch screens
@@ -272,7 +354,12 @@ function enterChat(name, role) {
   chatScreen.classList.remove('hidden');
   chatScreen.classList.add('active');
 
-  // Remove stale presence for the same name (if reconnecting with same uid, this is a no-op)
+  // Stop particles to save performance
+  particlesRunning = false;
+  const particlesCanvas = document.getElementById('particles');
+  if (particlesCanvas) particlesCanvas.style.display = 'none';
+
+  // Remove stale presence
   onlineRef.once('value', snap => {
     const users = snap.val() || {};
     Object.entries(users).forEach(([existingUid, u]) => {
@@ -292,7 +379,7 @@ function enterChat(name, role) {
   myTypingRef.onDisconnect().remove();
 
   // System message
-  postSystemMessage(`${name} joined the chat 🎉`);
+  postSystemMessage(`${name} joined the chat`);
 
   // Init emoji picker
   initEmojiPicker();
@@ -313,7 +400,6 @@ function enterChat(name, role) {
 function listenPersonalMute() {
   mutedUsersRef.child(currentUser.uid).on('value', snap => {
     myMuteData = snap.val();
-    // Auto-clean expired mutes
     if (myMuteData && myMuteData.until < Date.now()) {
       mutedUsersRef.child(currentUser.uid).remove();
       myMuteData = null;
@@ -366,16 +452,14 @@ messageInput.addEventListener('input', () => {
 function sendMessage() {
   if (!currentUser) return;
 
-  // Global chat mute check
   if (chatMuted && currentUser.role !== 'admin') {
-    showToast('🔇 Chat is muted by admin');
+    showToast('Chat is muted by admin');
     return;
   }
 
-  // Personal mute check
   if (myMuteData && myMuteData.until > Date.now() && currentUser.role !== 'admin') {
     const remaining = Math.ceil((myMuteData.until - Date.now()) / 60000);
-    showToast(`🔇 You are muted for ${remaining} more minute(s)`);
+    showToast(`You are muted for ${remaining} more minute(s)`);
     return;
   }
 
@@ -383,7 +467,7 @@ function sendMessage() {
   if (!text) return;
 
   const now = Date.now();
-  if (now - lastMsgTimestamp < 700) return; // debounce
+  if (now - lastMsgTimestamp < 700) return;
   lastMsgTimestamp = now;
 
   const msg = {
@@ -396,7 +480,6 @@ function sendMessage() {
     pinNext:     isPinNextMode   && currentUser.role === 'admin',
   };
 
-  // Attach reply reference if active
   if (replyTo) {
     msg.replyTo = {
       key:  replyTo.key,
@@ -432,7 +515,6 @@ function listenMessages() {
     scrollToBottom();
   });
 
-  // Real-time updates: reactions, edits, highlights
   messagesRef.on('child_changed', snap => {
     const msg = snap.val();
     if (!msg || msg.type === 'system') return;
@@ -450,7 +532,7 @@ function listenMessages() {
   });
 }
 
-// ---- Create message DOM element (returns element) ----
+// ---- Create message DOM element ----
 function createMessageElement(key, msg) {
   // System / announcement messages
   if (msg.type === 'system') {
@@ -463,8 +545,8 @@ function createMessageElement(key, msg) {
 
   const isMe    = currentUser && msg.uid === currentUser.uid;
   const isAdmin = currentUser && currentUser.role === 'admin';
-  const canDel  = isMe || isAdmin;           // all users can delete own; admin deletes any
-  const canEdit = isMe || isAdmin;                   // only admin can edit any message  now both 
+  const canDel  = isMe || isAdmin;
+  const canEdit = isMe || isAdmin;
 
   // Wrapper
   const wrapper = document.createElement('div');
@@ -488,18 +570,18 @@ function createMessageElement(key, msg) {
     if (msg.role === 'admin') {
       const badge = document.createElement('span');
       badge.className = 'role-badge';
-      badge.textContent = '👑 Admin';
+      badge.innerHTML = ICONS.shield + ' Admin';
       nameEl.appendChild(badge);
     }
     body.appendChild(nameEl);
   }
 
-  // ── Reply preview (jump-to-quoted message) ──
+  // Reply preview (jump-to-quoted message)
   if (msg.replyTo) {
     const rp = document.createElement('div');
     rp.className = 'msg-reply-preview';
     rp.innerHTML = `
-      <span class="rp-sender">↩ ${escapeHtml(msg.replyTo.name)}</span>
+      <span class="rp-sender">${ICONS.reply} ${escapeHtml(msg.replyTo.name)}</span>
       <span class="rp-snippet">${escapeHtml(msg.replyTo.text)}</span>
     `;
     rp.addEventListener('click', () => {
@@ -513,7 +595,7 @@ function createMessageElement(key, msg) {
     body.appendChild(rp);
   }
 
-  // ── Bubble ──
+  // Bubble
   const bubble = document.createElement('div');
   let bubbleClass = 'msg-bubble';
   if (msg.highlighted) bubbleClass += ' highlighted';
@@ -527,14 +609,14 @@ function createMessageElement(key, msg) {
   if (msg.edited) {
     const editedBadge = document.createElement('span');
     editedBadge.className = 'msg-edited';
-    editedBadge.textContent = ' ✏️';
+    editedBadge.innerHTML = ' ' + ICONS.pencilSmall;
     editedBadge.title = 'Edited';
     bubble.appendChild(editedBadge);
   }
 
   body.appendChild(bubble);
 
-  // ── Action buttons (appear on hover / tap) ──
+  // Action buttons (appear on hover / tap)
   const actions = document.createElement('div');
   actions.className = `msg-actions ${isMe ? 'actions-left' : 'actions-right'}`;
 
@@ -542,7 +624,7 @@ function createMessageElement(key, msg) {
   const replyBtn = document.createElement('button');
   replyBtn.className = 'msg-action-btn';
   replyBtn.title     = 'Reply';
-  replyBtn.textContent = '↩';
+  replyBtn.innerHTML = ICONS.reply;
   replyBtn.addEventListener('click', e => {
     e.stopPropagation();
     setReplyTo({ key, name: msg.name, text: msg.text });
@@ -553,32 +635,32 @@ function createMessageElement(key, msg) {
   const reactBtn = document.createElement('button');
   reactBtn.className   = 'msg-action-btn';
   reactBtn.title       = 'React';
-  reactBtn.textContent = '😊';
+  reactBtn.innerHTML   = ICONS.smilePlus;
   reactBtn.addEventListener('click', e => {
     e.stopPropagation();
     showReactionPicker(key, reactBtn);
   });
   actions.appendChild(reactBtn);
 
-  // Edit (admin only)
+  // Edit
   if (canEdit) {
     const editBtn = document.createElement('button');
     editBtn.className   = 'msg-action-btn';
     editBtn.title       = 'Edit';
-    editBtn.textContent = '✏️';
+    editBtn.innerHTML   = ICONS.pencil;
     editBtn.addEventListener('click', e => {
       e.stopPropagation();
-      editMessage(key, msg.text);
+      showEditModal(key, msg.text);
     });
     actions.appendChild(editBtn);
   }
 
-  // Pin (admin only) — pins this specific message
+  // Pin (admin only)
   if (isAdmin) {
     const pinBtn = document.createElement('button');
     pinBtn.className   = 'msg-action-btn';
     pinBtn.title       = msg.pinned ? 'Unpin' : 'Pin';
-    pinBtn.textContent = msg.pinned ? '📌' : '📍';
+    pinBtn.innerHTML   = msg.pinned ? ICONS.pinOff : ICONS.pin;
     pinBtn.addEventListener('click', e => {
       e.stopPropagation();
       if (msg.pinned) {
@@ -592,12 +674,12 @@ function createMessageElement(key, msg) {
     actions.appendChild(pinBtn);
   }
 
-  // Delete (own messages for all users, any message for admin)
+  // Delete
   if (canDel) {
     const delBtn = document.createElement('button');
     delBtn.className   = 'msg-action-btn danger';
     delBtn.title       = 'Delete';
-    delBtn.textContent = '🗑️';
+    delBtn.innerHTML   = ICONS.trash;
     delBtn.addEventListener('click', e => {
       e.stopPropagation();
       deleteMessage(key);
@@ -607,17 +689,17 @@ function createMessageElement(key, msg) {
 
   body.appendChild(actions);
 
-  // ── Reactions display ──
+  // Reactions display
   if (msg.reactions) {
     const reactionsEl = buildReactionsEl(key, msg.reactions);
     body.appendChild(reactionsEl);
   }
 
-  // ── Timestamp ──
+  // Timestamp
   const timeEl = document.createElement('div');
   timeEl.className   = 'msg-time';
   const ts = msg.timestamp ? new Date(msg.timestamp) : new Date();
-  timeEl.textContent = formatTime(ts) + (msg.pinned ? ' 📌' : '');
+  timeEl.innerHTML = formatTime(ts) + (msg.pinned ? ' ' + ICONS.pinSmall : '');
 
   body.appendChild(timeEl);
 
@@ -628,7 +710,6 @@ function createMessageElement(key, msg) {
   wrapper.addEventListener('click', e => {
     if (e.target.closest('.msg-action-btn') || e.target.closest('.msg-reply-preview') || e.target.closest('.msg-reactions')) return;
     wrapper.classList.toggle('actions-visible');
-    // Close other open ones
     document.querySelectorAll('.msg-wrapper.actions-visible').forEach(w => {
       if (w !== wrapper) w.classList.remove('actions-visible');
     });
@@ -642,7 +723,7 @@ function renderMessage(key, msg) {
   if (el) messagesList.appendChild(el);
 }
 
-// ---- Surgically update an existing message element (no full re-render) ----
+// ---- Surgically update an existing message element ----
 function updateMessageElement(key, msg) {
   const existing = document.getElementById(`msg-${key}`);
   if (!existing) return;
@@ -660,7 +741,7 @@ function updateMessageElement(key, msg) {
     if (msg.edited && !existing.querySelector('.msg-edited')) {
       const badge = document.createElement('span');
       badge.className   = 'msg-edited';
-      badge.textContent = ' ✏️';
+      badge.innerHTML   = ' ' + ICONS.pencilSmall;
       badge.title       = 'Edited';
       bubble.appendChild(badge);
     }
@@ -670,7 +751,7 @@ function updateMessageElement(key, msg) {
   const timeEl = existing.querySelector('.msg-time');
   if (timeEl) {
     const ts = msg.timestamp ? new Date(msg.timestamp) : new Date();
-    timeEl.textContent = formatTime(ts) + (msg.pinned ? ' 📌' : '');
+    timeEl.innerHTML = formatTime(ts) + (msg.pinned ? ' ' + ICONS.pinSmall : '');
   }
 
   // Update reactions
@@ -691,7 +772,6 @@ function updateMessageElement(key, msg) {
 //  REACTIONS
 // ==========================================
 function showReactionPicker(msgKey, anchor) {
-  // Close any existing reaction picker
   document.querySelectorAll('.reaction-picker-popup').forEach(el => el.remove());
 
   const picker = document.createElement('div');
@@ -709,11 +789,9 @@ function showReactionPicker(msgKey, anchor) {
     picker.appendChild(btn);
   });
 
-  // Position relative to anchor
   const actionsEl = anchor.closest('.msg-actions') || anchor.parentNode;
   actionsEl.appendChild(picker);
 
-  // Close on outside click
   setTimeout(() => {
     document.addEventListener('click', () => picker.remove(), { once: true });
   }, 0);
@@ -721,17 +799,14 @@ function showReactionPicker(msgKey, anchor) {
 
 function toggleReaction(msgKey, emoji) {
   if (!currentUser) return;
-  // Safe emoji key: convert to code points
   const emojiKey = [...emoji].map(c => c.codePointAt(0).toString(16)).join('_');
   const reactionRef = messagesRef.child(msgKey).child('reactions').child(emojiKey);
 
   reactionRef.once('value', snap => {
     const data = snap.val() || {};
     if (data[currentUser.uid]) {
-      // Remove my reaction
       reactionRef.child(currentUser.uid).remove();
     } else {
-      // Add my reaction: store emoji display char + uid
       reactionRef.child(currentUser.uid).set({ emoji, name: currentUser.name });
     }
   });
@@ -741,7 +816,6 @@ function buildReactionsEl(msgKey, reactions) {
   const container = document.createElement('div');
   container.className = 'msg-reactions';
 
-  // reactions: { emojiKey: { uid: { emoji, name }, ... }, ... }
   Object.entries(reactions).forEach(([emojiKey, users]) => {
     if (!users || typeof users !== 'object') return;
     const entries = Object.values(users);
@@ -774,7 +848,6 @@ function listenOnline() {
   onlineRef.on('value', snap => {
     const users = snap.val() || {};
 
-    // Deduplicate by name (in case of stale entries)
     const seen = new Set();
     const uniqueUsers = [];
     Object.entries(users).forEach(([uid, u]) => {
@@ -794,7 +867,11 @@ function listenOnline() {
       li.appendChild(dot);
 
       const nameSpan = document.createElement('span');
-      nameSpan.textContent = u.name + (u.role === 'admin' ? ' 👑' : '');
+      if (u.role === 'admin') {
+        nameSpan.innerHTML = escapeHtml(u.name) + ' ' + ICONS.shield;
+      } else {
+        nameSpan.textContent = u.name;
+      }
       nameSpan.style.flex  = '1';
       li.appendChild(nameSpan);
 
@@ -802,7 +879,7 @@ function listenOnline() {
       if (currentUser?.role === 'admin' && u.uid !== currentUser.uid) {
         const muteBtn = document.createElement('button');
         muteBtn.className   = 'mute-user-btn';
-        muteBtn.textContent = '🔇';
+        muteBtn.innerHTML   = ICONS.volumeX;
         muteBtn.title       = `Mute ${u.name}`;
         muteBtn.addEventListener('click', e => {
           e.stopPropagation();
@@ -815,9 +892,9 @@ function listenOnline() {
     });
 
     const count = uniqueUsers.length;
-    headerStatus.textContent = `● ${count} online`;
+    headerStatus.innerHTML = `<span class="status-dot"></span> ${count} online`;
     if (currentUser?.role === 'admin') {
-      headerStatus.textContent = `● Admin 👑 · ${count} online`;
+      headerStatus.innerHTML = `<span class="status-dot"></span> Admin · ${count} online`;
       headerStatus.style.color = '#e84393';
     }
   });
@@ -857,7 +934,10 @@ function listenChatState() {
     mutedNotice.classList.toggle('hidden', !chatMuted);
     messageInput.disabled = chatMuted && currentUser?.role !== 'admin';
     sendBtn.disabled      = chatMuted && currentUser?.role !== 'admin';
-    toggleMuteBtn.textContent = chatMuted ? '🔊 Unmute Chat' : '🔇 Mute Chat';
+
+    // Update mute button label
+    const muteLabel = toggleMuteBtn.querySelector('.mute-label');
+    if (muteLabel) muteLabel.textContent = chatMuted ? 'Unmute Chat' : 'Mute Chat';
 
     // Pinned bar
     currentPinnedId = state.pinnedId || null;
@@ -871,7 +951,7 @@ function listenChatState() {
     // Announcement toast
     if (state.announcement && state.announcement !== window._lastAnnouncement) {
       window._lastAnnouncement = state.announcement;
-      showToast('📢 ' + state.announcement);
+      showToast(state.announcement);
     }
 
     // Effects
@@ -894,15 +974,6 @@ function deleteMessage(key) {
 }
 
 // ==========================================
-//  EDIT MESSAGE (admin)
-// ==========================================
-function editMessage(key, currentText) {
-  const newText = prompt('Edit message:', currentText);
-  if (newText === null || newText.trim() === '' || newText.trim() === currentText) return;
-  messagesRef.child(key).update({ text: newText.trim(), edited: true });
-}
-
-// ==========================================
 //  SYSTEM MESSAGE
 // ==========================================
 function postSystemMessage(text, isAnnouncement = false) {
@@ -918,23 +989,24 @@ function postSystemMessage(text, isAnnouncement = false) {
 //  ADMIN ACTIONS
 // ==========================================
 clearChatBtn && clearChatBtn.addEventListener('click', () => {
-  if (!confirm('Clear ALL messages? This cannot be undone.')) return;
-  messagesRef.remove().then(() => {
-    postSystemMessage('🗑️ Chat was cleared by Admin');
+  showConfirm('Clear All Chat?', 'This will delete all messages permanently. This cannot be undone.', () => {
+    messagesRef.remove().then(() => {
+      postSystemMessage('Chat was cleared by Admin');
+    });
   });
 });
 
 toggleMuteBtn && toggleMuteBtn.addEventListener('click', () => {
   const newMuted = !chatMuted;
   stateRef.update({ muted: newMuted });
-  postSystemMessage(newMuted ? '🔇 Chat has been muted by Admin' : '🔊 Chat unmuted by Admin');
+  postSystemMessage(newMuted ? 'Chat has been muted by Admin' : 'Chat unmuted by Admin');
 });
 
 sendAnnouncementBtn && sendAnnouncementBtn.addEventListener('click', () => {
   const text = prompt('Enter announcement text:');
   if (text && text.trim()) {
-    postSystemMessage(`📢 ${text.trim()}`, true);
-    showToast('📢 ' + text.trim());
+    postSystemMessage(text.trim(), true);
+    showToast(text.trim());
   }
 });
 
@@ -959,9 +1031,8 @@ scrollToPinnedBtn && scrollToPinnedBtn.addEventListener('click', () => {
   }
 });
 
-// Clicking pinned bar → scroll to that message
 pinnedBar && pinnedBar.addEventListener('click', e => {
-  if (e.target === unpinBtn) return;
+  if (e.target === unpinBtn || e.target.closest('.unpin-btn')) return;
   if (currentPinnedId) {
     const target = document.getElementById(`msg-${currentPinnedId}`);
     if (target) {
@@ -973,7 +1044,6 @@ pinnedBar && pinnedBar.addEventListener('click', e => {
 });
 
 unpinBtn && unpinBtn.addEventListener('click', () => {
-  // Also remove pinned flag from the message
   if (currentPinnedId) {
     messagesRef.child(currentPinnedId).update({ pinned: false });
   }
@@ -986,15 +1056,15 @@ function adminMuteUser(targetUid, targetName) {
   if (isNaN(minutes)) return;
   if (minutes === 0) {
     mutedUsersRef.child(targetUid).remove();
-    postSystemMessage(`🔊 ${targetName} has been unmuted by Admin`);
-    showToast(`🔊 ${targetName} unmuted`);
+    postSystemMessage(`${targetName} has been unmuted by Admin`);
+    showToast(`${targetName} unmuted`);
   } else {
     mutedUsersRef.child(targetUid).set({
       until: Date.now() + minutes * 60000,
       name:  targetName
     });
-    postSystemMessage(`🔇 ${targetName} has been muted for ${minutes} minute(s) by Admin`);
-    showToast(`🔇 ${targetName} muted for ${minutes}m`);
+    postSystemMessage(`${targetName} has been muted for ${minutes} minute(s) by Admin`);
+    showToast(`${targetName} muted for ${minutes}m`);
   }
 }
 
@@ -1005,13 +1075,13 @@ pinMsgBtn    && pinMsgBtn.addEventListener('click',    () => setPinMode(!isPinNe
 function setHighlightMode(val) {
   isHighlightMode = val;
   highlightBtn.classList.toggle('active', val);
-  if (val) showToast('💖 Next message will be highlighted');
+  if (val) showToast('Next message will be highlighted');
 }
 
 function setPinMode(val) {
   isPinNextMode = val;
   pinMsgBtn.classList.toggle('active', val);
-  if (val) showToast('📌 Next message will be pinned');
+  if (val) showToast('Next message will be pinned');
 }
 
 // ==========================================
@@ -1119,19 +1189,6 @@ function escapeHtml(text) {
     .replace(/"/g, '&quot;');
 }
 
-// Dynamic shake keyframe
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-6px); }
-    40%       { transform: translateX(6px); }
-    60%       { transform: translateX(-4px); }
-    80%       { transform: translateX(4px); }
-  }
-`;
-document.head.appendChild(shakeStyle);
-
 // ==========================================
 //  KEYBOARD / VIEWPORT FIX (mobile)
 // ==========================================
@@ -1149,12 +1206,3 @@ if (typeof window !== 'undefined') {
     });
   }
 }
-
-// ==========================================
-//  GSAP entrance animations
-// ==========================================
-window.addEventListener('DOMContentLoaded', () => {
-  if (typeof gsap !== 'undefined') {
-    gsap.from('.join-card', { duration: 0.6, y: 40, opacity: 0, ease: 'back.out(1.4)' });
-  }
-});

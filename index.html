@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f0f1a" />
+  <meta name="description" content="GroupChat: Free real-time group messaging platform. No signup needed, just enter your name and start chatting." />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>GroupChat 💬</title>
+  <title>GroupChat: Real-time Messaging</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
@@ -15,33 +16,42 @@
 <body>
 
   <!-- Particle Canvas -->
-  <canvas id="particles"></canvas>
+  <canvas id="particles" aria-hidden="true"></canvas>
 
   <!-- Join Screen -->
-  <div id="joinScreen" class="screen active">
+  <div id="joinScreen" class="screen active" role="main">
     <div class="join-card">
       <div class="join-logo">
-        <span class="logo-icon">💬</span>
+        <div class="logo-icon-wrapper">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="44" height="44">
+            <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
+          </svg>
+        </div>
         <h1 class="logo-text">GroupChat</h1>
-        <p class="logo-sub">Real-time vibes only ✨</p>
+        <p class="logo-sub">Real-time messaging, simplified</p>
       </div>
       <div class="join-form">
-        <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="20" autocomplete="off" />
-        <button id="joinBtn" class="btn-primary">Join Chat →</button>
+        <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="20" autocomplete="off" aria-label="Your display name" />
+        <button id="joinBtn" class="btn-primary">
+          <span>Join Chat</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
       </div>
-      <p class="join-hint">No account needed. Just vibe. 🎉</p>
+      <p class="join-hint">No account needed. Jump right in.</p>
     </div>
   </div>
 
   <!-- Password Modal -->
-  <div id="passwordModal" class="modal-overlay hidden">
+  <div id="passwordModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-box">
-      <div class="modal-icon">🔐</div>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
       <h2 id="modalTitle">Enter Password</h2>
       <p id="modalDesc">This name has special powers. Enter password to unlock.</p>
-      <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" />
+      <input type="password" id="passwordInput" placeholder="Password..." autocomplete="off" aria-label="Admin password" />
       <div class="modal-actions">
-        <button id="passwordSubmit" class="btn-primary">Unlock ✨</button>
+        <button id="passwordSubmit" class="btn-primary"><span>Unlock</span></button>
         <button id="passwordSkip" class="btn-ghost">Join as Guest</button>
       </div>
       <p id="passwordError" class="error-text hidden">Wrong password! Joining as guest.</p>
@@ -56,52 +66,88 @@
       <div class="header-left">
         <div class="header-avatar" id="headerAvatar">A</div>
         <div class="header-info">
-          <span class="header-name" id="headerName">AdjChat</span>
-          <span class="header-status" id="headerStatus">● Online</span>
+          <span class="header-name" id="headerName">GroupChat</span>
+          <span class="header-status" id="headerStatus">
+            <span class="status-dot"></span> Online
+          </span>
         </div>
       </div>
       <div class="header-right">
-        <button class="icon-btn" id="onlineBtn" title="Online Users">👥</button>
-        <button class="icon-btn" id="adminMenuBtn" title="Admin Menu" style="display:none">⚙️</button>
+        <button class="icon-btn" id="onlineBtn" title="Online Users" aria-label="View online users">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </button>
+        <button class="icon-btn" id="adminMenuBtn" title="Admin Menu" aria-label="Admin controls" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
       </div>
     </header>
 
     <!-- Online Users Panel -->
-    <div id="onlinePanel" class="side-panel hidden">
+    <div id="onlinePanel" class="side-panel hidden" role="complementary" aria-label="Online users">
       <div class="panel-header">
-        <span>👥 Online Users</span>
-        <button class="close-panel" id="closeOnlinePanel">✕</button>
+        <span class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Online Users
+        </span>
+        <button class="close-panel" id="closeOnlinePanel" aria-label="Close panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
-      <ul id="onlineList" class="online-list"></ul>
+      <ul id="onlineList" class="online-list" role="list"></ul>
     </div>
 
     <!-- Admin Panel -->
-    <div id="adminPanel" class="side-panel hidden">
+    <div id="adminPanel" class="side-panel hidden" role="complementary" aria-label="Admin controls">
       <div class="panel-header">
-        <span>⚙️ Admin Controls</span>
-        <button class="close-panel" id="closeAdminPanel">✕</button>
+        <span class="panel-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Admin Controls
+        </span>
+        <button class="close-panel" id="closeAdminPanel" aria-label="Close panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
       <div class="admin-controls">
-        <button class="admin-btn danger" id="clearChatBtn">🗑️ Clear All Chat</button>
-        <button class="admin-btn" id="toggleMuteBtn">🔇 Mute Chat</button>
-        <button class="admin-btn accent" id="sendAnnouncementBtn">📢 Send Announcement</button>
-        <button class="admin-btn" id="scrollToPinnedBtn">📌 Scroll to Pinned</button>
-        <button class="admin-btn hearts" id="triggerHeartsBtn">💖 Trigger Hearts</button>
-        <button class="admin-btn emoji" id="triggerEmojiBtn">🎉 Trigger Confetti</button>
+        <button class="admin-btn danger" id="clearChatBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+          <span>Clear All Chat</span>
+        </button>
+        <button class="admin-btn" id="toggleMuteBtn">
+          <svg class="mute-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>
+          <span class="mute-label">Mute Chat</span>
+        </button>
+        <button class="admin-btn accent" id="sendAnnouncementBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+          <span>Send Announcement</span>
+        </button>
+        <button class="admin-btn" id="scrollToPinnedBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" x2="12" y1="17" y2="3"/><path d="m5 10 7 7 7-7"/></svg>
+          <span>Scroll to Pinned</span>
+        </button>
+        <button class="admin-btn hearts" id="triggerHeartsBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <span>Trigger Hearts</span>
+        </button>
+        <button class="admin-btn confetti" id="triggerEmojiBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg>
+          <span>Trigger Confetti</span>
+        </button>
       </div>
     </div>
 
     <!-- Pinned Message Bar -->
-    <div id="pinnedBar" class="pinned-bar hidden">
-      <span class="pin-icon">📌</span>
+    <div id="pinnedBar" class="pinned-bar hidden" role="status">
+      <svg class="pin-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>
       <span id="pinnedText" class="pinned-text"></span>
-      <button class="unpin-btn" id="unpinBtn">✕</button>
+      <button class="unpin-btn" id="unpinBtn" aria-label="Unpin message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
     </div>
 
     <!-- Messages Area -->
-    <main id="messagesArea" class="messages-area">
+    <main id="messagesArea" class="messages-area" role="log" aria-live="polite" aria-label="Chat messages">
       <div id="messagesList" class="messages-list"></div>
-      <div id="typingIndicator" class="typing-indicator hidden">
+      <div id="typingIndicator" class="typing-indicator hidden" role="status" aria-live="polite">
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
@@ -110,7 +156,10 @@
     </main>
 
     <!-- Muted Notice -->
-    <div id="mutedNotice" class="muted-notice hidden">🔇 Chat is muted by admin</div>
+    <div id="mutedNotice" class="muted-notice hidden" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>
+      <span>Chat is muted by admin</span>
+    </div>
 
     <!-- Input Area -->
     <footer class="chat-footer">
@@ -118,53 +167,87 @@
       <!-- Reply Preview Bar -->
       <div id="replyPreview" class="reply-preview hidden">
         <div class="reply-preview-inner">
-          <span class="reply-preview-icon">↩</span>
+          <svg class="reply-preview-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
           <div class="reply-preview-content">
             <span class="reply-preview-name" id="replyToName"></span>
             <span class="reply-preview-text" id="replyToText"></span>
           </div>
         </div>
-        <button id="cancelReply" class="cancel-reply-btn" title="Cancel reply">✕</button>
+        <button id="cancelReply" class="cancel-reply-btn" title="Cancel reply" aria-label="Cancel reply">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
       </div>
 
       <div class="input-row">
         <!-- Emoji Trigger -->
-        <button class="emoji-trigger-btn" id="emojiPickerBtn" title="Emoji">😊</button>
+        <button class="emoji-trigger-btn" id="emojiPickerBtn" title="Emoji" aria-label="Open emoji picker">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+        </button>
 
         <div class="input-wrapper">
-          <input type="text" id="messageInput" placeholder="Type a message..." maxlength="500" autocomplete="off" />
+          <input type="text" id="messageInput" placeholder="Type a message..." maxlength="500" autocomplete="off" aria-label="Message input" />
           <!-- Emoji Picker Popup -->
-          <div id="emojiPicker" class="emoji-picker hidden"></div>
+          <div id="emojiPicker" class="emoji-picker hidden" role="grid" aria-label="Emoji picker"></div>
         </div>
 
         <div class="footer-actions">
-          <button class="send-btn" id="sendBtn">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-              <path d="M2 21l21-9L2 3v7l15 2-15 2z"/>
-            </svg>
+          <button class="send-btn" id="sendBtn" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- Admin Extras (Sarika) -->
+      <!-- Admin Extras -->
       <div id="adminExtras" class="admin-extras hidden">
-        <button class="extra-btn highlight" id="highlightBtn">💖 Highlight</button>
-        <button class="extra-btn pin" id="pinMsgBtn">📌 Pin Next</button>
+        <button class="extra-btn highlight" id="highlightBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg>
+          <span>Highlight</span>
+        </button>
+        <button class="extra-btn pin" id="pinMsgBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="12" x2="12" y1="17" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>
+          <span>Pin Next</span>
+        </button>
       </div>
     </footer>
 
+  </div>
+
+  <!-- Edit Message Modal -->
+  <div id="editModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-box">
+      <h2 id="editModalTitle">Edit Message</h2>
+      <input type="text" id="editInput" placeholder="Edit your message..." maxlength="500" autocomplete="off" aria-label="Edit message text" />
+      <div class="modal-actions">
+        <button id="editSubmit" class="btn-primary"><span>Save</span></button>
+        <button id="editCancel" class="btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog -->
+  <div id="confirmModal" class="modal-overlay hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmDesc">
+    <div class="modal-box">
+      <div class="modal-icon confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+      </div>
+      <h2 id="confirmTitle">Are you sure?</h2>
+      <p id="confirmDesc">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button id="confirmYes" class="btn-primary btn-danger"><span>Confirm</span></button>
+        <button id="confirmNo" class="btn-ghost">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- Floating Effects Layer -->
   <div id="effectsLayer" class="effects-layer" aria-hidden="true"></div>
 
   <!-- Announcement Toast -->
-  <div id="announcementToast" class="announcement-toast hidden"></div>
+  <div id="announcementToast" class="announcement-toast hidden" role="alert" aria-live="assertive"></div>
 
-  <!-- Scripts -->
+  <!-- Scripts (GSAP removed - CSS animations used instead) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
