@@ -38,11 +38,22 @@ let replyTo          = null;  // { key, name, text }
 let myMuteData       = null;  // { until, name }
 let currentPinnedId  = null;  // for force-scroll
 
-// ---- Roles & Passwords ----
+// ---- Roles & Passwords (SHA-256 Hashed) ----
 const ROLES = {
-  'deva':   { password: '@deva27',   role: 'aman',  badge: null,  label: null },
-  'aman': { password: '@aman27', role: 'admin', badge: null,  label: 'Admin' },
+  'deva':   { passwordHash: '41ce236355ffd08ded0d085c5365bd9e3eadd9bfa8febc67e92ebb0b5d9f46f0', role: 'aman',  badge: null,  label: null },
+  'aman':   { passwordHash: 'c798adef6c2669ab25cec71d1bededfde98cdde7c7672e1017bd59e8a028fc08', role: 'admin', badge: null,  label: 'Admin' },
+  'sarika': { passwordHash: '9006da068bfc266e41ab1109544dff076032c75b5c9568b348d3cc563e0bc17c', role: 'admin', badge: null,  label: 'Admin' },
+  'khushi': { passwordHash: '2368b4253607029b4805d84dfc3ad8e613c1113896c2d300f1b3a1065c720751', role: 'admin', badge: null,  label: 'Admin' },
+  'anchal': { passwordHash: 'a32183cade5b2883556b8ff26051a30c1f00563f2b933822627e66f3dc08bc35', role: 'admin', badge: null,  label: 'Admin' },
 };
+
+// SHA-256 Hashing helper (Web Crypto API)
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 // ---- Quick Reactions ----
 const QUICK_REACTIONS = ['❤️', '😂', '😮', '🔥', '👍', '😭', '🥰', '😎'];
@@ -366,12 +377,14 @@ function handleJoin() {
 passwordSubmit.addEventListener('click', handlePasswordSubmit);
 passwordInput.addEventListener('keydown', e => { if (e.key === 'Enter') handlePasswordSubmit(); });
 
-function handlePasswordSubmit() {
+async function handlePasswordSubmit() {
   const key    = pendingName.toLowerCase();
   const config = ROLES[key];
   const entered = passwordInput.value;
 
-  if (entered === config.password) {
+  const enteredHash = await sha256(entered);
+
+  if (enteredHash === config.passwordHash) {
     passwordModal.classList.add('hidden');
     enterChat(pendingName, config.role);
   } else {
