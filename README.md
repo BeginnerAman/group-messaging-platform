@@ -69,7 +69,10 @@ const firebaseConfig = {
 };
 ```
 
-### 2. Run Locally
+### 2. Configure Administrators (Optional)
+You can easily set up administrative users and hash their passwords by running the interactive Python tool. Refer to the [Admin Setup Documentation](tools/admin-setup/README.md) for a detailed step-by-step guide.
+
+### 3. Run Locally
 Serve the application locally using any basic HTTP web server. No build steps are required.
 ```bash
 # Using Python
