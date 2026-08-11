@@ -124,6 +124,7 @@ const replyToText         = document.getElementById('replyToText');
 const cancelReplyBtn      = document.getElementById('cancelReply');
 const emojiPickerBtn      = document.getElementById('emojiPickerBtn');
 const emojiPickerEl       = document.getElementById('emojiPicker');
+const logoutBtn           = document.getElementById('logoutBtn');
 
 // ---- Custom Modal Elements ----
 const editModal     = document.getElementById('editModal');
@@ -332,9 +333,12 @@ passwordSkip.addEventListener('click', () => {
 // ==========================================
 //  ENTER CHAT
 // ==========================================
-function enterChat(name, role) {
+function enterChat(name, role, isAutoLogin = false) {
   const uid = 'u_' + name.toLowerCase().replace(/[^a-z0-9]/g, '_');
   currentUser = { name, role, uid };
+
+  // Save session to localStorage
+  localStorage.setItem('groupchat_session', JSON.stringify({ name, role, uid }));
 
   // Update header
   headerName.textContent  = name;
@@ -378,8 +382,10 @@ function enterChat(name, role) {
   myTypingRef = typingRef.child(uid);
   myTypingRef.onDisconnect().remove();
 
-  // System message
-  postSystemMessage(`${name} joined the chat`);
+  // System message (only if not an auto-login)
+  if (!isAutoLogin) {
+    postSystemMessage(`${name} joined the chat`);
+  }
 
   // Init emoji picker
   initEmojiPicker();
@@ -1123,6 +1129,48 @@ document.addEventListener('click', e => {
 });
 
 // ==========================================
+//  LOGOUT
+// ==========================================
+logoutBtn && logoutBtn.addEventListener('click', () => {
+  showConfirm('Logout?', 'Are you sure you want to logout?', () => {
+    logout();
+  });
+});
+
+function logout() {
+  if (!currentUser) return;
+
+  postSystemMessage(`${currentUser.name} left the chat`);
+
+  if (myOnlineRef) myOnlineRef.remove();
+  if (myTypingRef) myTypingRef.remove();
+
+  localStorage.removeItem('groupchat_session');
+
+  currentUser = null;
+  myOnlineRef = null;
+  myTypingRef = null;
+
+  headerName.textContent  = 'GroupChat';
+  headerAvatar.textContent = 'G';
+  headerStatus.innerHTML = '<span class="status-dot"></span> Online';
+  headerStatus.style.color = '';
+  adminMenuBtn.style.display = 'none';
+  adminExtras.classList.add('hidden');
+
+  chatScreen.classList.remove('active');
+  chatScreen.classList.add('hidden');
+  joinScreen.classList.remove('hidden');
+  joinScreen.classList.add('active');
+
+  particlesRunning = true;
+  const particlesCanvas = document.getElementById('particles');
+  if (particlesCanvas) {
+    particlesCanvas.style.display = 'block';
+  }
+}
+
+// ==========================================
 //  EFFECTS
 // ==========================================
 function launchEffect(type) {
@@ -1206,3 +1254,21 @@ if (typeof window !== 'undefined') {
     });
   }
 }
+
+// ==========================================
+//  AUTO LOGIN
+// ==========================================
+window.addEventListener('DOMContentLoaded', () => {
+  const sessionData = localStorage.getItem('groupchat_session');
+  if (sessionData) {
+    try {
+      const session = JSON.parse(sessionData);
+      if (session && session.name && session.role) {
+        enterChat(session.name, session.role, true);
+      }
+    } catch (e) {
+      console.error('Failed to parse active session:', e);
+      localStorage.removeItem('groupchat_session');
+    }
+  }
+});
