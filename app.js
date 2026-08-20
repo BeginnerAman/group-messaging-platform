@@ -40,11 +40,12 @@ let currentPinnedId  = null;  // for force-scroll
 
 // ---- Roles & Passwords (SHA-256 Hashed) ----
 const ROLES = {
-  'deva':   { passwordHash: '41ce236355ffd08ded0d085c5365bd9e3eadd9bfa8febc67e92ebb0b5d9f46f0', role: 'aman',  badge: null,  label: null },
-  'aman':   { passwordHash: 'c798adef6c2669ab25cec71d1bededfde98cdde7c7672e1017bd59e8a028fc08', role: 'admin', badge: null,  label: 'Admin' },
-  'sarika': { passwordHash: '9006da068bfc266e41ab1109544dff076032c75b5c9568b348d3cc563e0bc17c', role: 'admin', badge: null,  label: 'Admin' },
-  'khushi': { passwordHash: '2368b4253607029b4805d84dfc3ad8e613c1113896c2d300f1b3a1065c720751', role: 'admin', badge: null,  label: 'Admin' },
-  'anchal': { passwordHash: 'a32183cade5b2883556b8ff26051a30c1f00563f2b933822627e66f3dc08bc35', role: 'admin', badge: null,  label: 'Admin' },
+  'deva':   { passwordHash: 'e623009afdf602c6babeb66d44c529ba891c3070530c70de33d77126bac36513', role: 'aman',  badge: null,  label: null },
+  'aman':   { passwordHash: '0dbdbdf38eb6312e44eec90034ef65f9287333a12243db0dbe9a461a9b4919c7', role: 'admin', badge: null,  label: 'Admin' },
+  'sarika': { passwordHash: '40c91bf2c036bfc76de6068fdce147305845b938842ec3f0195fb20356f6c6c2', role: 'admin', badge: null,  label: 'Admin' },
+  'khushi': { passwordHash: '18905d624de2b8b1b02916d4c2b594988093f6f44ce1704f799dc2ba572ad065', role: 'admin', badge: null,  label: 'Admin' },
+  'anchal': { passwordHash: 'a32183cade5b2883556b8ff26051a30c1f00563f2b933822627e66f3dc08bc35', role: 'anchal', badge: null, label: null },
+  'dv':     { passwordHash: '9887cb7d78851814f61c3d899419d35191e6c75896ad5b59fca2df771dd3bf4b', role: 'admin', badge: null,  label: 'Admin' },
 };
 
 // SHA-256 Hashing helper (Web Crypto API)
