@@ -198,6 +198,10 @@ input::placeholder { color: var(--text-muted); }
   display: block;
 }
 
+#togglePasswordVisibility svg.hidden {
+  display: none;
+}
+
 .btn-primary {
   width: 100%;
   padding: 14px;
