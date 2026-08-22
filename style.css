@@ -165,6 +165,39 @@ input[type="password"] {
 input:focus { border-color: var(--accent-pink); box-shadow: 0 0 0 3px rgba(232,67,147,0.15); }
 input::placeholder { color: var(--text-muted); }
 
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  padding-right: 46px !important;
+}
+
+#togglePasswordVisibility {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+#togglePasswordVisibility:hover {
+  color: var(--text-primary);
+}
+
+#togglePasswordVisibility svg {
+  display: block;
+}
+
 .btn-primary {
   width: 100%;
   padding: 14px;

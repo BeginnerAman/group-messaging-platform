@@ -48,12 +48,102 @@ const ROLES = {
   'dv':     { passwordHash: '9887cb7d78851814f61c3d899419d35191e6c75896ad5b59fca2df771dd3bf4b', role: 'admin', badge: null,  label: 'Admin' },
 };
 
-// SHA-256 Hashing helper (Web Crypto API)
+// SHA-256 Hashing helper with secure Web Crypto and pure JS fallback
 async function sha256(message) {
-  const msgBuffer = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  if (window.crypto && crypto.subtle) {
+    try {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+      console.warn("Native SHA-256 failed, using fallback:", e);
+    }
+  }
+  return sha256Fallback(message);
+}
+
+// Pure JS SHA-256 implementation (Fallback for insecure HTTP contexts)
+function sha256Fallback(ascii) {
+  function rightRotate(value, amount) {
+    return (value >>> amount) | (value << (32 - amount));
+  }
+  
+  var mathPow = Math.pow;
+  var maxWord = mathPow(2, 32);
+  var lengthProperty = 'length';
+  var i, j;
+  var result = '';
+
+  var words = [];
+  var asciiLength = ascii[lengthProperty] * 8;
+  
+  var hash = sha256Fallback.h = sha256Fallback.h || [];
+  var k = sha256Fallback.k = sha256Fallback.k || [];
+  var primeCounter = k[lengthProperty];
+
+  var isPrime = function(n) {
+    for (var factor = 2; factor * factor <= n; factor++) {
+      if (n % factor === 0) return false;
+    }
+    return n > 1;
+  };
+
+  if (!primeCounter) {
+    for (var candidate = 2; primeCounter < 64; candidate++) {
+      if (isPrime(candidate)) {
+        if (primeCounter < 8) {
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+        }
+        k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+      }
+    }
+  }
+
+  ascii += '\x80';
+  while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+  for (i = 0; i < ascii[lengthProperty]; i++) {
+    j = ascii.charCodeAt(i);
+    if (j >> 8) return;
+    words[i >> 2] |= j << ((3 - i % 4) * 8);
+  }
+  words[words[lengthProperty]] = ((asciiLength / maxWord) | 0);
+  words[words[lengthProperty]] = (asciiLength | 0);
+
+  for (j = 0; j < words[lengthProperty]; j += 16) {
+    var w = words.slice(j, j + 16);
+    var oldHash = hash.slice(0);
+    
+    for (i = 0; i < 64; i++) {
+      var wItem = w[i];
+      if (i >= 16) {
+        var s0 = rightRotate(w[i - 15], 7) ^ rightRotate(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        var s1 = rightRotate(w[i - 2], 17) ^ rightRotate(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        wItem = w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      
+      var ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+      var temp1 = (hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + wItem) | 0;
+      var maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+      var temp2 = ((rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj) | 0;
+      
+      hash = [(temp1 + temp2) | 0].concat(hash);
+      hash[8] = (hash[8] + temp1) | 0;
+      hash.splice(9, 1);
+    }
+    
+    for (i = 0; i < 8; i++) {
+      hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+  }
+  
+  for (i = 0; i < 8; i++) {
+    var byteVal = hash[i];
+    if (byteVal < 0) byteVal += maxWord;
+    result += byteVal.toString(16).padStart(8, '0');
+  }
+  
+  return result;
 }
 
 // ---- Quick Reactions ----
@@ -393,10 +483,6 @@ async function handlePasswordSubmit() {
     passwordInput.value = '';
     passwordInput.classList.add('shake');
     setTimeout(() => passwordInput.classList.remove('shake'), 500);
-    setTimeout(() => {
-      passwordModal.classList.add('hidden');
-      enterChat(pendingName, 'user');
-    }, 1500);
   }
 }
 
@@ -404,6 +490,25 @@ passwordSkip.addEventListener('click', () => {
   passwordModal.classList.add('hidden');
   enterChat(pendingName, 'user');
 });
+
+// ---- Password Visibility Toggle ----
+const togglePasswordVisibility = document.getElementById('togglePasswordVisibility');
+if (togglePasswordVisibility) {
+  const eyeOpen = togglePasswordVisibility.querySelector('.eye-open');
+  const eyeClosed = togglePasswordVisibility.querySelector('.eye-closed');
+
+  togglePasswordVisibility.addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeOpen.classList.add('hidden');
+      eyeClosed.classList.remove('hidden');
+    } else {
+      passwordInput.type = 'password';
+      eyeOpen.classList.remove('hidden');
+      eyeClosed.classList.add('hidden');
+    }
+  });
+}
 
 // ==========================================
 //  ENTER CHAT
