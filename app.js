@@ -5,13 +5,13 @@
 
 // ---- Firebase Config ----
 const firebaseConfig = {
-  apiKey: "AIzaSyD7xkMs6PtzYd-GAvhd0DVAKZrsQ09mRDk",
-  authDomain: "group-messaging-platform.firebaseapp.com",
-  databaseURL: "https://group-messaging-platform-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "group-messaging-platform",
-  storageBucket: "group-messaging-platform.firebasestorage.app",
-  messagingSenderId: "636167704411",
-  appId: "1:636167704411:web:a58ef0b54edef951f5947e"
+  apiKey: "AIzaSyAN1SE-pVOfODB8F0dS7hmyb5CxEbvni5w",
+  authDomain: "chatting-f7486.firebaseapp.com",
+  databaseURL: "https://chatting-f7486-default-rtdb.firebaseio.com",
+  projectId: "chatting-f7486",
+  storageBucket: "chatting-f7486.firebasestorage.app",
+  messagingSenderId: "1055226394914",
+  appId: "1:1055226394914:web:2b374a992db8c93606cd7b"
 };
 
 firebase.initializeApp(firebaseConfig);
