@@ -5,13 +5,13 @@
 
 // ---- Firebase Config ----
 const firebaseConfig = {
-  apiKey: "AIzaSyAN1SE-pVOfODB8F0dS7hmyb5CxEbvni5w",
-  authDomain: "chatting-f7486.firebaseapp.com",
-  databaseURL: "https://chatting-f7486-default-rtdb.firebaseio.com",
-  projectId: "chatting-f7486",
-  storageBucket: "chatting-f7486.firebasestorage.app",
-  messagingSenderId: "1055226394914",
-  appId: "1:1055226394914:web:2b374a992db8c93606cd7b"
+  apiKey: "AIzaSyDde5ijKE7qflLeRQhdCp64opZYakaTXuc",
+  authDomain: "typing-7c7ea.firebaseapp.com",
+  databaseURL: "https://typing-7c7ea-default-rtdb.firebaseio.com",
+  projectId: "typing-7c7ea",
+  storageBucket: "typing-7c7ea.firebasestorage.app",
+  messagingSenderId: "1023010536480",
+  appId: "1:1023010536480:web:508ec93cd051df4d75d045"
 };
 
 firebase.initializeApp(firebaseConfig);
